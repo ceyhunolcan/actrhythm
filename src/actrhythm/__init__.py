@@ -15,6 +15,9 @@ from .rhythm import (
     interdaily_stability, intradaily_variability, l5, m10,
     relative_amplitude,
 )
+from .sleep import (
+    total_rest_time, rest_efficiency, wake_after_onset, number_of_awakenings,
+)
 
 __version__ = "0.1.0"
 __all__ = [
@@ -22,4 +25,5 @@ __all__ = [
     "fragmentation_index", "active_mask",
     "interdaily_stability", "intradaily_variability",
     "l5", "m10", "relative_amplitude",
+    "total_rest_time", "rest_efficiency", "wake_after_onset", "number_of_awakenings",
 ]
