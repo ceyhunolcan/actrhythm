@@ -53,6 +53,20 @@ __all__ = ["interdaily_stability", "intradaily_variability",
            "l5", "m10", "relative_amplitude"]
 
 
+def _validate_epochs_per_hour(epochs_per_hour: int) -> int:
+    """Validate epochs_per_hour is a positive integer and return int.
+
+    Raises TypeError for non-integer values and ValueError for values < 1.
+    """
+    # Allow numpy integer types as well
+    if not isinstance(epochs_per_hour, (int, np.integer)):
+        raise TypeError("epochs_per_hour must be an integer")
+    epochs_per_hour = int(epochs_per_hour)
+    if epochs_per_hour < 1:
+        raise ValueError("epochs_per_hour must be >= 1")
+    return epochs_per_hour
+
+
 def _clean(activity: ArrayLike) -> np.ndarray:
     a = np.asarray(activity, dtype=float).ravel()
     if a.size == 0:
@@ -88,8 +102,7 @@ def interdaily_stability(activity: ArrayLike, epochs_per_hour: int) -> float:
     is zero.
     """
     a = _clean(activity)
-    if epochs_per_hour < 1:
-        raise ValueError("epochs_per_hour must be >= 1")
+    epochs_per_hour = _validate_epochs_per_hour(epochs_per_hour)
     bins_per_day = 24 * epochs_per_hour
     usable = (a.size // bins_per_day) * bins_per_day
     if usable < bins_per_day:
@@ -108,6 +121,7 @@ def interdaily_stability(activity: ArrayLike, epochs_per_hour: int) -> float:
 def _hourly_profile(activity: ArrayLike, epochs_per_hour: int) -> np.ndarray:
     """Mean activity per clock hour, folded across all days (length 24)."""
     a = _clean(activity)
+    epochs_per_hour = _validate_epochs_per_hour(epochs_per_hour)
     bins_per_day = 24 * epochs_per_hour
     usable = (a.size // bins_per_day) * bins_per_day
     if usable < bins_per_day:
