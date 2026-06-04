@@ -53,17 +53,20 @@ __all__ = ["interdaily_stability", "intradaily_variability",
            "l5", "m10", "relative_amplitude"]
 
 
+from .validation import EpochsPerHourError
+
+
 def _validate_epochs_per_hour(epochs_per_hour: int) -> int:
     """Validate epochs_per_hour is a positive integer and return int.
 
-    Raises TypeError for non-integer values and ValueError for values < 1.
+    Raises EpochsPerHourError for invalid values. Accepts numpy integer types.
     """
     # Allow numpy integer types as well
     if not isinstance(epochs_per_hour, (int, np.integer)):
-        raise TypeError("epochs_per_hour must be an integer")
+        raise EpochsPerHourError("epochs_per_hour must be an integer")
     epochs_per_hour = int(epochs_per_hour)
     if epochs_per_hour < 1:
-        raise ValueError("epochs_per_hour must be >= 1")
+        raise EpochsPerHourError("epochs_per_hour must be >= 1")
     return epochs_per_hour
 
 

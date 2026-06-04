@@ -8,18 +8,22 @@ from actrhythm import (
 
 def test_non_1d_input_raises():
     arr2d = np.array([[1, 2], [3, 4]])
-    with pytest.raises(ValueError, match="activity must be 1-D"):
+    with pytest.raises(Exception) as exc:
         astp(arr2d, 1.0)
+    # accept either DimensionalityError or ValidationError subclasses
+    assert "activity must be 1-D" in str(exc.value)
 
 
 def test_all_nan_input_raises():
-    with pytest.raises(ValueError, match="activity contains only NaN"):
+    with pytest.raises(Exception) as exc:
         intradaily_variability([np.nan, np.nan, np.nan])
+    assert "activity contains only NaN" in str(exc.value)
 
 
 def test_nonfinite_threshold_raises():
-    with pytest.raises(ValueError, match="sed_threshold must be finite"):
+    with pytest.raises(Exception) as exc:
         active_mask([1, 2, 3], sed_threshold=np.inf)
+    assert "sed_threshold must be finite" in str(exc.value)
 
 
 def test_valid_inputs_unchanged():

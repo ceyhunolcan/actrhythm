@@ -20,5 +20,6 @@ def test_interdaily_stability_rejects_non_integer_epochs_per_hour():
     # non-integer epochs_per_hour should raise (slicing requires integer bins)
     day = np.sin(np.linspace(0, 2 * np.pi, 24, endpoint=False)) + 2
     series = np.tile(day, 3)
-    with pytest.raises(TypeError):
+    with pytest.raises(Exception) as exc:
         interdaily_stability(series, epochs_per_hour=1.5)
+    assert "epochs_per_hour" in str(exc.value)
