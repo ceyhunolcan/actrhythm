@@ -6,6 +6,28 @@ bout statistics) used in actigraphy and digital-phenotyping research.
 
 Functions take a plain 1-D activity series (minute-level MIMS, ENMO, counts,
 etc.) — no device- or study-specific assumptions.
+
+Module-level usage notes
+------------------------
+- Input: pass a 1-D sequence (list/tuple/numpy array). Many functions accept
+  either a boolean rest mask (True==rest) or a numeric activity series with
+  an explicit threshold where required (e.g., sleep functions).
+- Missing data: NaN values are treated consistently (typically treated as
+  inactive/rest for fragmentation and as numeric NaN for mean-based rhythm
+  metrics); consult individual function docstrings for details.
+- Interpretation: higher ASTP/SATP indicates shorter bouts and more
+  fragmentation; RA (relative amplitude) near 1 indicates a strong day/night
+  contrast.
+
+Examples
+--------
+>>> from actrhythm import astp, m10, total_rest_time
+>>> series = [0, 2, 2, 0, 1, 0, 2]
+>>> astp(series, sed_threshold=1.0)
+0.5
+>>> m10(series, epochs_per_hour=1)
+...  # see examples/ for runnable scripts
+
 """
 from .fragmentation import (
     active_mask, astp, satp, bout_lengths, mean_bout_length,
