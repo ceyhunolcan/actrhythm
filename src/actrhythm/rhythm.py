@@ -5,10 +5,37 @@ activity rhythm, introduced for actigraphy by Witting et al. (1990) and
 formalized by Van Someren et al. (1999). They require an evenly-sampled
 activity series and the number of epochs per hour.
 
+Functions expect a 1-D sequence (list/tuple/np.ndarray) of per-epoch activity
+values and an integer epochs_per_hour describing how many samples represent
+one clock hour (e.g., 60 for minute-level data). Inputs may contain NaN to
+represent missing epochs; NaNs are treated as "inactive" in fragmentation
+utilities and propagate through mean-based rhythm metrics.
+
+Available metrics
+-----------------
   IS  Interdaily Stability   — how reproducible the 24-h pattern is across days
   IV  Intradaily Variability — fragmentation of the rhythm within a day
   RA  Relative Amplitude     — contrast between most-active 10 h and least 5 h
   L5 / M10                   — mean activity in those least/most active windows
+
+Notes
+-----
+- The numerical formulas are preserved and validated against published
+  reference values; do not change without re-validation.
+- Many functions return ``float('nan')`` for degenerate inputs (e.g., zero
+  variance or too-short series).
+
+Examples
+--------
+>>> from actrhythm import m10, l5, relative_amplitude
+>>> profile = [1]*24
+>>> profile[8:18] = [10]*10
+>>> m10(profile, epochs_per_hour=1)
+10.0
+>>> l5(profile, epochs_per_hour=1)
+1.0
+>>> relative_amplitude(profile, epochs_per_hour=1)
+0.8181818181818182
 
 References
 ----------
@@ -26,10 +53,29 @@ __all__ = ["interdaily_stability", "intradaily_variability",
            "l5", "m10", "relative_amplitude"]
 
 
+from .validation import EpochsPerHourError
+
+
+def _validate_epochs_per_hour(epochs_per_hour: int) -> int:
+    """Validate epochs_per_hour is a positive integer and return int.
+
+    Raises EpochsPerHourError for invalid values. Accepts numpy integer types.
+    """
+    # Allow numpy integer types as well
+    if not isinstance(epochs_per_hour, (int, np.integer)):
+        raise EpochsPerHourError("epochs_per_hour must be an integer")
+    epochs_per_hour = int(epochs_per_hour)
+    if epochs_per_hour < 1:
+        raise EpochsPerHourError("epochs_per_hour must be >= 1")
+    return epochs_per_hour
+
+
+from .validation import validate_1d_array
+
+
 def _clean(activity: ArrayLike) -> np.ndarray:
-    a = np.asarray(activity, dtype=float).ravel()
-    if a.size == 0:
-        raise ValueError("activity series is empty")
+    # enforce 1-D, non-empty, and not all-NaN for rhythm metrics
+    a = validate_1d_array(activity, name="activity", allow_all_nan=False).astype(float).ravel()
     return a
 
 
@@ -61,8 +107,7 @@ def interdaily_stability(activity: ArrayLike, epochs_per_hour: int) -> float:
     is zero.
     """
     a = _clean(activity)
-    if epochs_per_hour < 1:
-        raise ValueError("epochs_per_hour must be >= 1")
+    epochs_per_hour = _validate_epochs_per_hour(epochs_per_hour)
     bins_per_day = 24 * epochs_per_hour
     usable = (a.size // bins_per_day) * bins_per_day
     if usable < bins_per_day:
@@ -81,6 +126,7 @@ def interdaily_stability(activity: ArrayLike, epochs_per_hour: int) -> float:
 def _hourly_profile(activity: ArrayLike, epochs_per_hour: int) -> np.ndarray:
     """Mean activity per clock hour, folded across all days (length 24)."""
     a = _clean(activity)
+    epochs_per_hour = _validate_epochs_per_hour(epochs_per_hour)
     bins_per_day = 24 * epochs_per_hour
     usable = (a.size // bins_per_day) * bins_per_day
     if usable < bins_per_day:

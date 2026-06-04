@@ -5,9 +5,30 @@ people with identical total activity can differ greatly in how fragmented that
 activity is, which carries independent health signal (Di et al. 2017;
 Wanigatunga et al. 2019).
 
-All functions operate on a 1-D sequence of per-epoch activity values (e.g.
-minute-level MIMS, ENMO, or counts) plus a sedentary threshold. They are pure:
-array in, scalar out. No file I/O, no study-specific assumptions.
+Functions operate on a 1-D sequence of per-epoch activity values (list/ndarray)
+and a sedentary threshold (float). Inputs may contain ``numpy.nan``; by
+convention NaNs are treated as inactive (sedentary) for fragmentation
+calculations. Functions return Python floats or numpy arrays and are pure
+(predictable, no I/O).
+
+Behavior & return values
+------------------------
+- Empty input raises ``ValueError``.
+- When no bouts of the requested type exist, ``bout_lengths`` returns an empty
+  integer array and ``mean_bout_length`` returns ``float('nan')``.
+- Transition probabilities and fragmentation index return ``float('nan')``
+  for series shorter than 2 epochs.
+
+Examples
+--------
+>>> from actrhythm import active_mask, astp, mean_bout_length
+>>> series = [0, 2, 2, 0, 3]
+>>> active_mask(series, 1.0)
+array([False, True, True, False, True])
+>>> astp(series, 1.0)
+0.5
+>>> mean_bout_length(series, 1.0, active=True)
+2.0
 
 References
 ----------
@@ -27,10 +48,12 @@ __all__ = [
 ]
 
 
+from .validation import validate_1d_array, validate_threshold
+
+
 def _as_array(activity: ArrayLike) -> np.ndarray:
-    a = np.asarray(activity, dtype=float).ravel()
-    if a.size == 0:
-        raise ValueError("activity series is empty")
+    # validate dimensionality and emptiness; allow some NaNs but not all
+    a = validate_1d_array(activity, name="activity", allow_all_nan=False).astype(float).ravel()
     return a
 
 
@@ -40,6 +63,8 @@ def active_mask(activity: ArrayLike, sed_threshold: float) -> np.ndarray:
     NaN epochs are treated as inactive (False). Epochs at exactly the
     threshold are active, matching the common ``>=`` cut-point convention.
     """
+    # validate threshold is finite
+    validate_threshold(sed_threshold, name="sed_threshold")
     a = _as_array(activity)
     return np.nan_to_num(a, nan=-np.inf) >= sed_threshold
 

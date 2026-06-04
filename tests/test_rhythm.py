@@ -69,5 +69,6 @@ def test_epochs_per_hour_aggregation():
 
 
 def test_invalid_epochs_per_hour_raises():
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception) as exc:
         interdaily_stability([1, 2], epochs_per_hour=0)
+    assert "epochs_per_hour" in str(exc.value)

@@ -53,8 +53,9 @@ def test_all_active_series_has_no_transitions():
 
 
 def test_empty_series_raises():
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception) as exc:
         astp([], THR)
+    assert "activity is empty" in str(exc.value)
 
 
 def test_single_epoch_transition_is_nan():
