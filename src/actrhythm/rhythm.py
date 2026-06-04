@@ -67,10 +67,12 @@ def _validate_epochs_per_hour(epochs_per_hour: int) -> int:
     return epochs_per_hour
 
 
+from .validation import validate_1d_array
+
+
 def _clean(activity: ArrayLike) -> np.ndarray:
-    a = np.asarray(activity, dtype=float).ravel()
-    if a.size == 0:
-        raise ValueError("activity series is empty")
+    # enforce 1-D, non-empty, and not all-NaN for rhythm metrics
+    a = validate_1d_array(activity, name="activity", allow_all_nan=False).astype(float).ravel()
     return a
 
 

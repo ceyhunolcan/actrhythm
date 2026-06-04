@@ -26,6 +26,7 @@ from typing import Optional
 
 import numpy as np
 from numpy.typing import ArrayLike
+from .validation import validate_1d_array, validate_threshold
 
 __all__ = [
     "total_rest_time",
@@ -43,7 +44,8 @@ def _to_rest_mask(data: ArrayLike, rest_threshold: Optional[float]) -> np.ndarra
     provided, epochs with value < rest_threshold are considered rest. If
     numeric and ``rest_threshold`` is None, raises ValueError.
     """
-    a = np.asarray(data)
+    # validate dimensionality and emptiness; NaN-only arrays are invalid
+    a = validate_1d_array(data, name="data", allow_all_nan=False)
     if a.dtype == bool or np.issubdtype(a.dtype, np.bool_):
         return a.astype(bool)
     # treat integer 0/1 masks as boolean masks
@@ -53,6 +55,8 @@ def _to_rest_mask(data: ArrayLike, rest_threshold: Optional[float]) -> np.ndarra
     if np.issubdtype(a.dtype, np.number):
         if rest_threshold is None:
             raise ValueError("rest_threshold must be provided for numeric activity input")
+        # validate threshold
+        validate_threshold(rest_threshold, name="rest_threshold")
         # treat NaN as wake (not rest)
         return np.nan_to_num(a, nan=np.inf) < float(rest_threshold)
     raise TypeError("Unsupported data type for sleep metric computation")

@@ -48,10 +48,12 @@ __all__ = [
 ]
 
 
+from .validation import validate_1d_array, validate_threshold
+
+
 def _as_array(activity: ArrayLike) -> np.ndarray:
-    a = np.asarray(activity, dtype=float).ravel()
-    if a.size == 0:
-        raise ValueError("activity series is empty")
+    # validate dimensionality and emptiness; allow some NaNs but not all
+    a = validate_1d_array(activity, name="activity", allow_all_nan=False).astype(float).ravel()
     return a
 
 
@@ -61,6 +63,8 @@ def active_mask(activity: ArrayLike, sed_threshold: float) -> np.ndarray:
     NaN epochs are treated as inactive (False). Epochs at exactly the
     threshold are active, matching the common ``>=`` cut-point convention.
     """
+    # validate threshold is finite
+    validate_threshold(sed_threshold, name="sed_threshold")
     a = _as_array(activity)
     return np.nan_to_num(a, nan=-np.inf) >= sed_threshold
 
