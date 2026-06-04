@@ -5,10 +5,37 @@ activity rhythm, introduced for actigraphy by Witting et al. (1990) and
 formalized by Van Someren et al. (1999). They require an evenly-sampled
 activity series and the number of epochs per hour.
 
+Functions expect a 1-D sequence (list/tuple/np.ndarray) of per-epoch activity
+values and an integer epochs_per_hour describing how many samples represent
+one clock hour (e.g., 60 for minute-level data). Inputs may contain NaN to
+represent missing epochs; NaNs are treated as "inactive" in fragmentation
+utilities and propagate through mean-based rhythm metrics.
+
+Available metrics
+-----------------
   IS  Interdaily Stability   — how reproducible the 24-h pattern is across days
   IV  Intradaily Variability — fragmentation of the rhythm within a day
   RA  Relative Amplitude     — contrast between most-active 10 h and least 5 h
   L5 / M10                   — mean activity in those least/most active windows
+
+Notes
+-----
+- The numerical formulas are preserved and validated against published
+  reference values; do not change without re-validation.
+- Many functions return ``float('nan')`` for degenerate inputs (e.g., zero
+  variance or too-short series).
+
+Examples
+--------
+>>> from actrhythm import m10, l5, relative_amplitude
+>>> profile = [1]*24
+>>> profile[8:18] = [10]*10
+>>> m10(profile, epochs_per_hour=1)
+10.0
+>>> l5(profile, epochs_per_hour=1)
+1.0
+>>> relative_amplitude(profile, epochs_per_hour=1)
+0.8181818181818182
 
 References
 ----------
