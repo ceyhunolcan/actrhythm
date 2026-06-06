@@ -30,6 +30,7 @@ minute-level pipelines.
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 from numpy.typing import ArrayLike
@@ -64,7 +65,7 @@ def segment_indices(sample_index: ArrayLike, *, step: int = 1) -> list[tuple[int
 
 def split_on_gaps(
     activity: ArrayLike, sample_index: ArrayLike, *, step: int = 1
-) -> list[np.ndarray]:
+) -> list[np.ndarray[Any, Any]]:
     """Split a flat activity series into contiguous segments at gaps."""
     a = np.asarray(activity, dtype=float).ravel()
     idx = np.asarray(sample_index).ravel()
@@ -78,7 +79,7 @@ def _as_segments(
     activity: ArrayLike | None,
     sample_index: ArrayLike | None,
     step: int,
-) -> list[np.ndarray]:
+) -> list[np.ndarray[Any, Any]]:
     """Resolve the two input styles into a list of 1-D float arrays."""
     if segments is not None:
         if activity is not None or sample_index is not None:
@@ -93,7 +94,7 @@ def _as_segments(
 
 
 def _pooled_transition_prob(
-    segs: list[np.ndarray], sed_threshold: float, *, from_state: bool
+    segs: list[np.ndarray[Any, Any]], sed_threshold: float, *, from_state: bool
 ) -> float:
     """Pooled transition probability across segments. NaN if no origin epochs."""
     flips = 0
@@ -144,7 +145,7 @@ def bout_lengths_segmented(
     activity: ArrayLike | None = None,
     sample_index: ArrayLike | None = None,
     step: int = 1,
-) -> np.ndarray:
+) -> np.ndarray[Any, Any]:
     """Concatenated active (or sedentary) bout lengths computed per segment."""
     segs = _as_segments(segments, activity, sample_index, step)
     parts = [bout_lengths(seg, sed_threshold, active=active) for seg in segs if seg.size]

@@ -5,7 +5,7 @@ activity rhythm, introduced for actigraphy by Witting et al. (1990) and
 formalized by Van Someren et al. (1999). They require an evenly-sampled
 activity series and the number of epochs per hour.
 
-Functions expect a 1-D sequence (list/tuple/np.ndarray) of per-epoch activity
+Functions expect a 1-D sequence (list/tuple/np.ndarray[Any, Any]) of per-epoch activity
 values and an integer epochs_per_hour describing how many samples represent
 one clock hour (e.g., 60 for minute-level data). Inputs may contain NaN to
 represent missing epochs; NaNs are treated as "inactive" in fragmentation
@@ -46,6 +46,8 @@ Van Someren EJW, et al. "Bright light therapy ... by application of
 """
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import ArrayLike
 
@@ -69,7 +71,7 @@ def _validate_epochs_per_hour(epochs_per_hour: int) -> int:
     return epochs_per_hour
 
 
-def _clean(activity: ArrayLike) -> np.ndarray:
+def _clean(activity: ArrayLike) -> np.ndarray[Any, Any]:
     # enforce 1-D, non-empty, and not all-NaN for rhythm metrics
     a = validate_1d_array(activity, name="activity", allow_all_nan=False).astype(float).ravel()
     return a
@@ -119,7 +121,7 @@ def interdaily_stability(activity: ArrayLike, epochs_per_hour: int) -> float:
     return float(between / (p * var))
 
 
-def _hourly_profile(activity: ArrayLike, epochs_per_hour: int) -> np.ndarray:
+def _hourly_profile(activity: ArrayLike, epochs_per_hour: int) -> np.ndarray[Any, Any]:
     """Mean activity per clock hour, folded across all days (length 24)."""
     a = _clean(activity)
     epochs_per_hour = _validate_epochs_per_hour(epochs_per_hour)
@@ -131,7 +133,7 @@ def _hourly_profile(activity: ArrayLike, epochs_per_hour: int) -> np.ndarray:
     return np.asarray(hourly.reshape(-1, 24).mean(axis=0))
 
 
-def _extreme_window(profile24: np.ndarray, hours: int, *, most_active: bool) -> float:
+def _extreme_window(profile24: np.ndarray[Any, Any], hours: int, *, most_active: bool) -> float:
     """Mean of the most/least active `hours`-long consecutive (wrapping) window."""
     if profile24.size != 24:
         raise ValueError("expected a 24-hour profile")

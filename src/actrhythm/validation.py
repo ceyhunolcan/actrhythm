@@ -5,6 +5,8 @@ finite thresholds with clear error messages.
 """
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import ArrayLike
 
@@ -35,7 +37,7 @@ class EpochsPerHourError(ValidationError):
 
 def validate_1d_array(
     data: ArrayLike, *, name: str = "array", allow_all_nan: bool = False
-) -> np.ndarray:
+) -> np.ndarray[Any, Any]:
     """Validate and return a 1-D numpy array.
 
     Raises specialized ValidationError subclasses for clear error handling:

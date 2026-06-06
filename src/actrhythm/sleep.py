@@ -22,6 +22,8 @@ al., Sleep 2003) where:
 """
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import ArrayLike
 
@@ -35,7 +37,7 @@ __all__ = [
 ]
 
 
-def _to_rest_mask(data: ArrayLike, rest_threshold: float | None) -> np.ndarray:
+def _to_rest_mask(data: ArrayLike, rest_threshold: float | None) -> np.ndarray[Any, Any]:
     """Convert input to boolean rest mask (True==rest).
 
     If ``data`` is a boolean or integer 0/1 sequence, it is interpreted as a
@@ -61,7 +63,7 @@ def _to_rest_mask(data: ArrayLike, rest_threshold: float | None) -> np.ndarray:
     raise TypeError("Unsupported data type for sleep metric computation")
 
 
-def _onset_and_offset(mask: np.ndarray) -> tuple[int, int]:
+def _onset_and_offset(mask: np.ndarray[Any, Any]) -> tuple[int, int]:
     """Return (start_idx, end_idx) inclusive of the first and last True.
 
     If no True values present, raise ValueError.

@@ -39,6 +39,8 @@ Wanigatunga AA, et al. "Association of total daily physical activity and
 """
 from __future__ import annotations
 
+from typing import Any
+
 import numpy as np
 from numpy.typing import ArrayLike
 
@@ -51,13 +53,13 @@ __all__ = [
 from .validation import validate_1d_array, validate_threshold
 
 
-def _as_array(activity: ArrayLike) -> np.ndarray:
+def _as_array(activity: ArrayLike) -> np.ndarray[Any, Any]:
     # validate dimensionality and emptiness; allow some NaNs but not all
     a = validate_1d_array(activity, name="activity", allow_all_nan=False).astype(float).ravel()
     return a
 
 
-def active_mask(activity: ArrayLike, sed_threshold: float) -> np.ndarray:
+def active_mask(activity: ArrayLike, sed_threshold: float) -> np.ndarray[Any, Any]:
     """Boolean mask of active epochs (activity >= sed_threshold).
 
     NaN epochs are treated as inactive (False). Epochs at exactly the
@@ -69,7 +71,7 @@ def active_mask(activity: ArrayLike, sed_threshold: float) -> np.ndarray:
     return np.asarray(np.nan_to_num(a, nan=-np.inf) >= sed_threshold)
 
 
-def _transition_probability(mask: np.ndarray, from_state: bool) -> float:
+def _transition_probability(mask: np.ndarray[Any, Any], from_state: bool) -> float:
     """P(state flips next epoch | currently in `from_state`)."""
     if mask.size < 2:
         return float("nan")
@@ -100,7 +102,9 @@ def satp(activity: ArrayLike, sed_threshold: float) -> float:
     return _transition_probability(active_mask(activity, sed_threshold), from_state=False)
 
 
-def bout_lengths(activity: ArrayLike, sed_threshold: float, *, active: bool = True) -> np.ndarray:
+def bout_lengths(
+    activity: ArrayLike, sed_threshold: float, *, active: bool = True
+) -> np.ndarray[Any, Any]:
     """Lengths (in epochs) of consecutive active (or sedentary) bouts."""
     mask = active_mask(activity, sed_threshold)
     target = mask if active else ~mask
