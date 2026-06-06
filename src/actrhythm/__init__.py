@@ -45,6 +45,13 @@ from .rhythm import (
     m10,
     relative_amplitude,
 )
+from .segmented import (
+    astp_segmented,
+    bout_lengths_segmented,
+    satp_segmented,
+    segment_indices,
+    split_on_gaps,
+)
 from .sleep import (
     number_of_awakenings,
     rest_efficiency,
@@ -60,4 +67,6 @@ __all__ = [
     "l5", "m10", "relative_amplitude",
     "total_rest_time", "rest_efficiency", "wake_after_onset", "number_of_awakenings",
     "cosinor", "CosinorResult",
+    "astp_segmented", "satp_segmented", "bout_lengths_segmented",
+    "segment_indices", "split_on_gaps",
 ]
