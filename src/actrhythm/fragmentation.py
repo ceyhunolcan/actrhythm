@@ -66,7 +66,7 @@ def active_mask(activity: ArrayLike, sed_threshold: float) -> np.ndarray:
     # validate threshold is finite
     validate_threshold(sed_threshold, name="sed_threshold")
     a = _as_array(activity)
-    return np.nan_to_num(a, nan=-np.inf) >= sed_threshold
+    return np.asarray(np.nan_to_num(a, nan=-np.inf) >= sed_threshold)
 
 
 def _transition_probability(mask: np.ndarray, from_state: bool) -> float:

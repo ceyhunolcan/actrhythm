@@ -1,8 +1,10 @@
 import numpy as np
-import pytest
 
 from actrhythm import (
-    active_mask, bout_lengths, mean_bout_length, fragmentation_index,
+    active_mask,
+    bout_lengths,
+    fragmentation_index,
+    mean_bout_length,
 )
 
 

@@ -33,7 +33,9 @@ class EpochsPerHourError(ValidationError):
     pass
 
 
-def validate_1d_array(data: ArrayLike, *, name: str = "array", allow_all_nan: bool = False) -> np.ndarray:
+def validate_1d_array(
+    data: ArrayLike, *, name: str = "array", allow_all_nan: bool = False
+) -> np.ndarray:
     """Validate and return a 1-D numpy array.
 
     Raises specialized ValidationError subclasses for clear error handling:
@@ -51,7 +53,7 @@ def validate_1d_array(data: ArrayLike, *, name: str = "array", allow_all_nan: bo
     return a
 
 
-def validate_threshold(val, *, name: str = "threshold") -> float:
+def validate_threshold(val: float, *, name: str = "threshold") -> float:
     """Ensure a numeric threshold is provided and finite.
 
     Accepts integer-like floats (e.g., 1.0) and numpy scalar types by coercing
@@ -62,8 +64,8 @@ def validate_threshold(val, *, name: str = "threshold") -> float:
         raise ThresholdError(f"{name} must be provided and finite")
     try:
         v = float(val)
-    except Exception:
-        raise ThresholdError(f"{name} must be a finite number")
+    except (TypeError, ValueError) as err:
+        raise ThresholdError(f"{name} must be a finite number") from err
     if not np.isfinite(v):
         raise ThresholdError(f"{name} must be finite")
     return v

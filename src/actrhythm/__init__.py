@@ -30,15 +30,25 @@ Examples
 
 """
 from .fragmentation import (
-    active_mask, astp, satp, bout_lengths, mean_bout_length,
+    active_mask,
+    astp,
+    bout_lengths,
     fragmentation_index,
+    mean_bout_length,
+    satp,
 )
 from .rhythm import (
-    interdaily_stability, intradaily_variability, l5, m10,
+    interdaily_stability,
+    intradaily_variability,
+    l5,
+    m10,
     relative_amplitude,
 )
 from .sleep import (
-    total_rest_time, rest_efficiency, wake_after_onset, number_of_awakenings,
+    number_of_awakenings,
+    rest_efficiency,
+    total_rest_time,
+    wake_after_onset,
 )
 
 __version__ = "0.1.0"

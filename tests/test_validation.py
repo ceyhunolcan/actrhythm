@@ -1,9 +1,7 @@
 import numpy as np
 import pytest
 
-from actrhythm import (
-    active_mask, astp, intradaily_variability, total_rest_time, rest_efficiency
-)
+from actrhythm import active_mask, astp, intradaily_variability, rest_efficiency, total_rest_time
 
 
 def test_non_1d_input_raises():

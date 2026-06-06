@@ -22,10 +22,9 @@ al., Sleep 2003) where:
 """
 from __future__ import annotations
 
-from typing import Optional
-
 import numpy as np
 from numpy.typing import ArrayLike
+
 from .validation import validate_1d_array, validate_threshold
 
 __all__ = [
@@ -36,7 +35,7 @@ __all__ = [
 ]
 
 
-def _to_rest_mask(data: ArrayLike, rest_threshold: Optional[float]) -> np.ndarray:
+def _to_rest_mask(data: ArrayLike, rest_threshold: float | None) -> np.ndarray:
     """Convert input to boolean rest mask (True==rest).
 
     If ``data`` is a boolean or integer 0/1 sequence, it is interpreted as a
@@ -58,7 +57,7 @@ def _to_rest_mask(data: ArrayLike, rest_threshold: Optional[float]) -> np.ndarra
         # validate threshold
         validate_threshold(rest_threshold, name="rest_threshold")
         # treat NaN as wake (not rest)
-        return np.nan_to_num(a, nan=np.inf) < float(rest_threshold)
+        return np.asarray(np.nan_to_num(a, nan=np.inf) < float(rest_threshold))
     raise TypeError("Unsupported data type for sleep metric computation")
 
 
@@ -73,7 +72,7 @@ def _onset_and_offset(mask: np.ndarray) -> tuple[int, int]:
     return int(true_idx[0]), int(true_idx[-1])
 
 
-def total_rest_time(data: ArrayLike, *, rest_threshold: Optional[float] = None) -> int:
+def total_rest_time(data: ArrayLike, *, rest_threshold: float | None = None) -> int:
     """Total rest time in epochs.
 
     Parameters
@@ -97,7 +96,7 @@ def total_rest_time(data: ArrayLike, *, rest_threshold: Optional[float] = None) 
     return int(mask.sum())
 
 
-def rest_efficiency(data: ArrayLike, *, rest_threshold: Optional[float] = None) -> float:
+def rest_efficiency(data: ArrayLike, *, rest_threshold: float | None = None) -> float:
     """Rest efficiency: total_rest_time / time_in_bed.
 
     Time-in-bed is taken as the inclusive window from the first rest epoch
@@ -115,7 +114,7 @@ def rest_efficiency(data: ArrayLike, *, rest_threshold: Optional[float] = None) 
     return float(mask[start : end + 1].sum() / tib)
 
 
-def wake_after_onset(data: ArrayLike, *, rest_threshold: Optional[float] = None) -> int:
+def wake_after_onset(data: ArrayLike, *, rest_threshold: float | None = None) -> int | float:
     """WASO: number of wake epochs between sleep onset and final awakening.
 
     Returns integer count; NaN is not applicable (returns 0 when there are no
@@ -131,7 +130,7 @@ def wake_after_onset(data: ArrayLike, *, rest_threshold: Optional[float] = None)
     return int((~window).sum())
 
 
-def number_of_awakenings(data: ArrayLike, *, rest_threshold: Optional[float] = None) -> int:
+def number_of_awakenings(data: ArrayLike, *, rest_threshold: float | None = None) -> int | float:
     """Number of discrete awakenings (wake bouts) between onset and offset.
 
     Awakening is defined as any contiguous run of wake epochs (False) within

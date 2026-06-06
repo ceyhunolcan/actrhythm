@@ -4,8 +4,12 @@
 Run: python examples/basic_usage.py
 """
 from actrhythm import (
-    active_mask, astp, satp, fragmentation_index,
-    total_rest_time, rest_efficiency,
+    active_mask,
+    astp,
+    fragmentation_index,
+    rest_efficiency,
+    satp,
+    total_rest_time,
 )
 
 SERIES = [0, 2, 2, 0, 1, 0, 2, 2, 0, 0, 1, 2]

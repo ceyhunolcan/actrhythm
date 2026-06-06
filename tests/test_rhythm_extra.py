@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from actrhythm import m10, intradaily_variability, interdaily_stability
+from actrhythm import interdaily_stability, intradaily_variability, m10
 
 
 def test_m10_raises_on_insufficient_data():

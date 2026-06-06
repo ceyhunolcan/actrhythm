@@ -3,7 +3,11 @@ import numpy as np
 import pytest
 
 from actrhythm import (
-    interdaily_stability, intradaily_variability, l5, m10, relative_amplitude,
+    interdaily_stability,
+    intradaily_variability,
+    l5,
+    m10,
+    relative_amplitude,
 )
 
 

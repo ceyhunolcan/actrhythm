@@ -3,7 +3,7 @@
 
 Run: python examples/interpret_metrics.py
 """
-from actrhythm import (m10, l5, relative_amplitude, rest_efficiency)
+from actrhythm import l5, m10, relative_amplitude, rest_efficiency
 
 # simple illustrative profile: low values (rest) then high values (active)
 profile = [1]*8 + [10]*10 + [1]*6  # length 24

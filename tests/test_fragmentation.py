@@ -3,7 +3,12 @@ import numpy as np
 import pytest
 
 from actrhythm import (
-    astp, satp, bout_lengths, mean_bout_length, fragmentation_index, active_mask,
+    active_mask,
+    astp,
+    bout_lengths,
+    fragmentation_index,
+    mean_bout_length,
+    satp,
 )
 
 SERIES = [2, 2, 0, 0, 0, 2, 2, 2, 0, 2]

@@ -49,11 +49,10 @@ from __future__ import annotations
 import numpy as np
 from numpy.typing import ArrayLike
 
+from .validation import EpochsPerHourError, validate_1d_array
+
 __all__ = ["interdaily_stability", "intradaily_variability",
            "l5", "m10", "relative_amplitude"]
-
-
-from .validation import EpochsPerHourError
 
 
 def _validate_epochs_per_hour(epochs_per_hour: int) -> int:
@@ -68,9 +67,6 @@ def _validate_epochs_per_hour(epochs_per_hour: int) -> int:
     if epochs_per_hour < 1:
         raise EpochsPerHourError("epochs_per_hour must be >= 1")
     return epochs_per_hour
-
-
-from .validation import validate_1d_array
 
 
 def _clean(activity: ArrayLike) -> np.ndarray:
@@ -132,7 +128,7 @@ def _hourly_profile(activity: ArrayLike, epochs_per_hour: int) -> np.ndarray:
     if usable < bins_per_day:
         raise ValueError("need at least one full 24-hour day of data")
     hourly = a[:usable].reshape(-1, epochs_per_hour).mean(axis=1)
-    return hourly.reshape(-1, 24).mean(axis=0)
+    return np.asarray(hourly.reshape(-1, 24).mean(axis=0))
 
 
 def _extreme_window(profile24: np.ndarray, hours: int, *, most_active: bool) -> float:

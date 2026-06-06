@@ -4,9 +4,20 @@
 Run: python examples/compute_all.py
 """
 from actrhythm import (
-    active_mask, astp, satp, bout_lengths, mean_bout_length, fragmentation_index,
-    interdaily_stability, intradaily_variability, m10, l5, relative_amplitude,
-    total_rest_time, rest_efficiency, wake_after_onset, number_of_awakenings,
+    astp,
+    bout_lengths,
+    fragmentation_index,
+    interdaily_stability,
+    intradaily_variability,
+    l5,
+    m10,
+    mean_bout_length,
+    number_of_awakenings,
+    relative_amplitude,
+    rest_efficiency,
+    satp,
+    total_rest_time,
+    wake_after_onset,
 )
 
 SERIES = [0, 2, 2, 0, 1, 0, 2, 2, 0, 0, 1, 2] * 3  # repeat to mimic multiple days

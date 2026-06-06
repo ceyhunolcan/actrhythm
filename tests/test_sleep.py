@@ -2,7 +2,10 @@ import numpy as np
 import pytest
 
 from actrhythm import (
-    total_rest_time, rest_efficiency, wake_after_onset, number_of_awakenings,
+    number_of_awakenings,
+    rest_efficiency,
+    total_rest_time,
+    wake_after_onset,
 )
 
 # Binary rest mask: True == rest
