@@ -152,4 +152,4 @@ def bout_lengths_segmented(
     parts = [p for p in parts if p.size]
     if not parts:
         return np.array([], dtype=int)
-    return np.concatenate(parts).astype(int)
+    return np.asarray(np.concatenate(parts), dtype=int)
