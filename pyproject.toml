@@ -35,6 +35,7 @@ packages = ["src/actrhythm"]
 [tool.ruff]
 line-length = 100
 src = ["src", "tests"]
+extend-exclude = ["examples"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "NPY"]
