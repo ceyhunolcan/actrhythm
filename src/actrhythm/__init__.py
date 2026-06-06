@@ -29,6 +29,7 @@ Examples
 ...  # see examples/ for runnable scripts
 
 """
+from .cosinor import CosinorResult, cosinor
 from .fragmentation import (
     active_mask,
     astp,
@@ -58,4 +59,5 @@ __all__ = [
     "interdaily_stability", "intradaily_variability",
     "l5", "m10", "relative_amplitude",
     "total_rest_time", "rest_efficiency", "wake_after_onset", "number_of_awakenings",
+    "cosinor", "CosinorResult",
 ]
